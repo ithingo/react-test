@@ -1,7 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const HtmlWebpackPluginConfig = new HtmlWebpackPlugin({
   template: './src/index.html',
@@ -13,10 +12,11 @@ module.exports = {
   target: 'web',
   devServer: {
     port: 3000,
-    contentBase: './dist'
+    contentBase: path.resolve(__dirname, 'dist'),
+    compress: true
   },
   entry: {
-    app: ['./src/components/App.jsx'],
+    app: ['./src/index.js'],
     vendor: ['react', 'react-dom']
   },
   output: {
@@ -35,20 +35,16 @@ module.exports = {
         use: ['babel-loader']
       },
       {
-        test: /\.css$/,
+        test: /\.(scss|css)$/,
         use: [
-          MiniCssExtractPlugin.loader,
-          'css-loader',
-          'postcss-loader'
+          { loader: 'style-loader' },
+          { loader: 'css-loader' },
+          { loader: 'sass-loader' },
         ]
       }
     ]
   },
   plugins: [
-    new MiniCssExtractPlugin({
-      filename: 'styles.css',
-      chunkFilename: 'styles.css'
-    }),
     HtmlWebpackPluginConfig,
     new webpack.NoEmitOnErrorsPlugin(),
   ],
